@@ -10,10 +10,27 @@ app.use(express.json());
 
 // Get Products by Category
 app.get("/products", async (req: Request, res: Response) => {
-	const category = req.query.category as string;
+	const category = req.query.category as string | undefined; // Optional category filter
+	const page = parseInt(req.query.page as string) || 1; // Default to page 1
+	const limit = parseInt(req.query.limit as string) || 10; // Default to 10 products per page
+
 	try {
-		const products = await Product.find({ category });
-		res.status(200).json(products);
+		const query: { category?: string } = {};
+		if (category) {
+			query.category = category;
+		}
+
+		const totalProducts = await Product.countDocuments(query); // Total matching products
+		const products = await Product.find(query)
+			.skip((page - 1) * limit) // Skip products for pagination
+			.limit(limit); // Limit products per page
+
+		res.status(200).json({
+			totalProducts,
+			currentPage: page,
+			totalPages: Math.ceil(totalProducts / limit),
+			products,
+		});
 	} catch (error) {
 		res.status(500).json({ message: "Error fetching products", error });
 	}
