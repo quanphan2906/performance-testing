@@ -1,0 +1,37 @@
+config:
+    target: "https://e-commerce-app-vtwx.onrender.com"
+    phases:
+        - duration: 60
+          arrivalRate: 10
+    payload:
+        - path: data/userIds.csv
+          fields: ["userId"]
+          order: random
+          skipHeader: true
+        - path: data/productIds.csv
+          fields: ["productId"]
+          order: random
+          skipHeader: true
+scenarios:
+    - name: Browse products
+      flow:
+          - get:
+                url: "/products?page={{ $randomNumber(1,10) }}&limit=20"
+    - name: Add to cart
+      flow:
+          - post:
+                url: "/cart"
+                json:
+                    userId: "{{ userId }}"
+                    productId: "{{ productId }}"
+                    quantity: 1
+    - name: Place order
+      flow:
+          - post:
+                url: "/orders"
+                json:
+                    userId: "{{ userId }}"
+                    items:
+                        - productId: "{{ productId }}"
+                          quantity: 1
+                    total: 699
