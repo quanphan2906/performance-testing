@@ -1,8 +1,17 @@
 config:
     target: "https://e-commerce-app-vtwx.onrender.com"
     phases:
-        - duration: 60
-          arrivalRate: 10
+        - duration: 120
+          arrivalRate: 0
+          rampTo: 100
+          name: Ramp up
+        - duration: 300
+          arrivalRate: 100
+          name: Steady load
+        - duration: 120
+          arrivalRate: 100
+          rampTo: 0
+          name: Ramp down
     payload:
         - path: data/userIds.csv
           fields: ["userId"]
@@ -12,6 +21,8 @@ config:
           fields: ["productId"]
           order: random
           skipHeader: true
+    http:
+        timeout: 30
 scenarios:
     - name: Browse products
       flow:

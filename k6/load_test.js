@@ -20,14 +20,13 @@ const productIds = new SharedArray("productIds", function () {
 // Test options
 export const options = {
 	scenarios: {
-		ramp_up: {
-			executor: "ramping-arrival-rate",
-			startRate: 1, // Start with 1 user per second
-			timeUnit: "1s", // Time unit for the rate
-			preAllocatedVUs: 10, // Pre-allocate virtual users
-			maxVUs: 50, // Maximum number of virtual users
+		load_test: {
+			executor: "ramping-vus",
+			startVUs: 0,
 			stages: [
-				{ duration: "60s", target: 20 }, // Sustain 5 users per second for 60 seconds
+				{ duration: "120s", target: 100 },
+				{ duration: "300s", target: 100 },
+				{ duration: "120s", target: 0 },
 			],
 		},
 	},

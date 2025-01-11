@@ -1,11 +1,14 @@
 config:
     target: "https://e-commerce-app-vtwx.onrender.com"
     phases:
-        - duration: 20
-          arrivalRate: 1
-          rampTo: 5
         - duration: 60
-          arrivalRate: 5
+          arrivalRate: 0
+          rampTo: 500
+          name: Spike
+        - duration: 60
+          arrivalRate: 500
+          rampTo: 0
+          name: Ramp down spike
     payload:
         - path: data/userIds.csv
           fields: ["userId"]
@@ -15,11 +18,9 @@ config:
           fields: ["productId"]
           order: random
           skipHeader: true
+    http:
+        timeout: 30
 scenarios:
-    - name: Browse products
-      flow:
-          - get:
-                url: "/products?page={{ $randomNumber(1,10) }}&limit=20"
     - name: Add to cart
       flow:
           - post:
