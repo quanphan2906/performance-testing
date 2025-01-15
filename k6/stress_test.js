@@ -24,8 +24,9 @@ export const options = {
 		http_req_duration: ["p(50)<300", "p(95)<500", "p(99)<1000"], // Latency requirements
 	},
 	stages: [
-		{ duration: "60s", target: 100 },
-		{ duration: "60s", target: 0 },
+		{ duration: "120s", target: 100 }, // Ramp-up
+		{ duration: "600s", target: 100 }, // Steady load
+		{ duration: "120s", target: 0 }, // Ramp-down
 	],
 };
 
